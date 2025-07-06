@@ -13,7 +13,9 @@ export class CandidateController {
     ) {}
 
     @Post()
-    @UseInterceptors(FileInterceptor('file'))
+    @UseInterceptors(FileInterceptor('file', {
+        dest: './uploads/'
+    }))
     async uploadCandidate(
         @UploadedFile() file: Express.Multer.File,
         @Body() body: CreateCandidateDto,
