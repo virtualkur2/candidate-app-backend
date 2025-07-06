@@ -1,9 +1,10 @@
 import { Body, Controller, Post, Res, UploadedFile, UseInterceptors, BadRequestException, HttpStatus } from '@nestjs/common';
 import { CandidateService } from './candidate.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {Response} from 'express';
+import { Response } from 'express';
 import * as fs from 'fs';
 import { CreateCandidateDto } from './dto/create-candidate.dto';
+import { CandidateResponseDto } from './dto/candidate-response.dto';
 
 @Controller('candidates')
 export class CandidateController {
@@ -31,7 +32,15 @@ export class CandidateController {
         }
 
         try {
-            return resp.status(HttpStatus.OK).json({});
+            const excelData = await this.candidateService.processExcelFile(file.path);
+            const processedData: CandidateResponseDto = {
+                name: body.name,
+                surname: body.surname,
+                seniority: excelData.seniority,
+                years: excelData.yearsOfExperience,
+                availability: excelData.availability,
+            }
+            return resp.status(HttpStatus.OK).json(processedData);
         } catch (error) {
 
             if (fs.existsSync(file.path)) {
