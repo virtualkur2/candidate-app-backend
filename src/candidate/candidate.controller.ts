@@ -3,6 +3,7 @@ import { CandidateService } from './candidate.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {Response} from 'express';
 import * as fs from 'fs';
+import { CreateCandidateDto } from './dto/create-candidate.dto';
 
 @Controller('candidates')
 export class CandidateController {
@@ -14,14 +15,14 @@ export class CandidateController {
     @UseInterceptors(FileInterceptor('file'))
     async uploadCandidate(
         @UploadedFile() file: Express.Multer.File,
-        @Body() body: unknown,
+        @Body() body: CreateCandidateDto,
         @Res() resp: Response
     ) {
         if (!file) {
             throw new BadRequestException('Excel file is required.');
         }
         
-        if (!file.originalname.match(/\.(xlsx|xls)$/)) {
+        if (!/\.(xlsx|xls)$/.exec(file.originalname)) {
             // Delete the uploaded file if it's not an Excel file
             fs.unlink(file.path, (err) => {
               if (err) console.error('Error deleting non-excel file:', err);
