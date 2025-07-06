@@ -1,0 +1,1 @@
+export type SeniorityType = 'junior' | 'senior';

@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
+import { SeniorityType } from './domain/seniority.type';
 
 
 interface CandidateData {
-    seniority: 'junior' | 'senior';
+    seniority: SeniorityType;
     yearsOfExperience: number;
     availability: boolean;
 }
@@ -41,7 +42,7 @@ export class CandidateService {
                 throw new BadRequestException('Invalid Seniority value in Excel. Must be "junior" or "senior".');
             }
 
-            const seniority: 'junior' | 'senior' = seniorityRaw as 'junior' | 'senior';
+            const seniority: SeniorityType = seniorityRaw as SeniorityType;
 
             if (isNaN(yearsOfExperienceRaw) || yearsOfExperienceRaw < 0) {
                 throw new BadRequestException('Years of experience in Excel must be a non-negative number.');
