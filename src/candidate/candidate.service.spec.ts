@@ -1,14 +1,27 @@
+import { Test, TestingModule } from '@nestjs/testing';
 import { CandidateService } from './candidate.service';
 import { BadRequestException } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
-
+import { CANDIDATE_REPOSITORY } from './domain/candidate.repository.interface';
 
 describe('CandidateService', () => {
   let service: CandidateService;
+  let repoMock: any;
 
-  beforeEach(() => {
-    service = new CandidateService();
+  beforeEach(async () => {
+    repoMock = {
+      save: jest.fn(),
+      findAll: jest.fn().mockReturnValue([]),
+      findById: jest.fn(),
+    };
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        CandidateService,
+        { provide: CANDIDATE_REPOSITORY, useValue: repoMock },
+      ],
+    }).compile();
+    service = module.get<CandidateService>(CandidateService);
     jest.clearAllMocks();
   });
 
