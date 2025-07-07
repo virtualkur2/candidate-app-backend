@@ -36,15 +36,15 @@ export class CandidateController {
 
         try {
             const excelData = await this.candidateService.processExcelFile(file.path);
-            // Persist candidate
-            const saved = this.candidateService.saveCandidate({
+            const response: CandidateResponseDto = {
                 name: body.name,
                 surname: body.surname,
                 seniority: excelData.seniority,
                 years: excelData.yearsOfExperience,
                 availability: excelData.availability,
-            });
-            return resp.status(HttpStatus.OK).json(saved);
+            }
+            this.candidateService.saveCandidate(response);
+            return resp.status(HttpStatus.OK).json(response);
         } catch (error) {
 
             if (fs.existsSync(file.path)) {

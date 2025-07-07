@@ -47,6 +47,8 @@ describe('CandidateController', () => {
   beforeEach(async () => {
     const mockCandidateService = {
       processExcelFile: jest.fn(),
+      saveCandidate: jest.fn(),
+      getAllCandidates: jest.fn(),
     };
 
     mockResponse = {
@@ -83,15 +85,33 @@ describe('CandidateController', () => {
   });
 
   describe('uploadCandidate', () => {
-    it('should successfully process and return candidate data', async () => {
-      
+    it('should successfully process and return candidate data without id', async () => {
       candidateService.processExcelFile.mockResolvedValue(mockExcelData);
-
+      candidateService.saveCandidate = jest.fn().mockReturnValue({
+        id: 'generated-id',
+        name: mockCreateCandidateDto.name,
+        surname: mockCreateCandidateDto.surname,
+        seniority: mockExcelData.seniority,
+        years: mockExcelData.yearsOfExperience,
+        availability: mockExcelData.availability,
+      });
       await controller.uploadCandidate(mockFile, mockCreateCandidateDto, mockResponse);
-
       expect(candidateService.processExcelFile).toHaveBeenCalledWith(mockFile.path);
+      expect(candidateService.saveCandidate).toHaveBeenCalledWith({
+        name: mockCreateCandidateDto.name,
+        surname: mockCreateCandidateDto.surname,
+        seniority: mockExcelData.seniority,
+        years: mockExcelData.yearsOfExperience,
+        availability: mockExcelData.availability,
+      });
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith(mockCandidateResponse);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        name: mockCreateCandidateDto.name,
+        surname: mockCreateCandidateDto.surname,
+        seniority: mockExcelData.seniority,
+        years: mockExcelData.yearsOfExperience,
+        availability: mockExcelData.availability,
+      });
     });
 
     it('should throw BadRequestException when no file is provided', async () => {
@@ -183,8 +203,6 @@ describe('CandidateController', () => {
         yearsOfExperience: 2,
         availability: false,
       };
-      candidateService.processExcelFile.mockResolvedValue(customExcelData);
-
       const expectedResponse: CandidateResponseDto = {
         name: 'Jane',
         surname: 'Smith',
@@ -192,6 +210,8 @@ describe('CandidateController', () => {
         years: 2,
         availability: false,
       };
+      candidateService.processExcelFile.mockResolvedValue(customExcelData);
+      candidateService.saveCandidate.mockReturnValue({...expectedResponse, id: 'test-id'});
 
       const customDto: CreateCandidateDto = {
         name: 'Jane',
@@ -214,6 +234,20 @@ describe('CandidateController', () => {
         ...mockCandidateResponse,
         seniority: 'junior',
       });
+    });
+  });
+
+  describe('getAllCandidates', () => {
+    it('should return all persisted candidates', async () => {
+      const mockCandidates = [
+        { id: '1', name: 'A', surname: 'B', seniority: 'junior', years: 1, availability: true },
+        { id: '2', name: 'C', surname: 'D', seniority: 'senior', years: 5, availability: false },
+      ];
+      candidateService.getAllCandidates = jest.fn().mockReturnValue(mockCandidates);
+      const resp: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+      await controller.getAllCandidates(resp);
+      expect(resp.status).toHaveBeenCalledWith(200);
+      expect(resp.json).toHaveBeenCalledWith(mockCandidates);
     });
   });
 });

@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { SeniorityType } from './domain/seniority.type';
 import { Candidate } from './domain/candidate.entity';
 import { CANDIDATE_REPOSITORY, ICandidateRepository } from './domain/candidate.repository.interface';
+import { CandidateResponseDto } from './dto/candidate-response.dto';
 
 interface CandidateData {
     seniority: SeniorityType;
@@ -82,7 +83,7 @@ export class CandidateService {
         }
     }
 
-    saveCandidate(data: { name: string; surname: string; seniority: string; years: number; availability: boolean }): Candidate {
+    saveCandidate(data: CandidateResponseDto): Candidate {
       const id = Date.now().toString(36) + Math.random().toString(36).slice(2);
       const candidate = new Candidate(id, data.name, data.surname, data.seniority, data.years, data.availability);
       return this.candidateRepository.save(candidate);
