@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Candidate } from '../domain/candidate.entity';
-import { ICandidateRepository } from '../domain/candidate.repository.interface';
+import { Candidate } from '../../domain/candidate.entity';
+import { ICandidateRepository } from '../../domain/candidate.repository.interface';
 
 @Injectable()
 export class InMemoryCandidateRepository implements ICandidateRepository {

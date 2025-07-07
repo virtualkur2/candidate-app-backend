@@ -1,10 +1,10 @@
 import { Body, Controller, Post, Get, Res, UploadedFile, UseInterceptors, BadRequestException, HttpStatus } from '@nestjs/common';
-import { CandidateService } from './candidate.service';
+import { CandidateService } from '../services/candidate.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import * as fs from 'fs';
-import { CreateCandidateDto } from './dto/create-candidate.dto';
-import { CandidateResponseDto } from './dto/candidate-response.dto';
+import { CreateCandidateDto } from '../../dto/create-candidate.dto';
+import { CandidateResponseDto } from '../../dto/candidate-response.dto';
 
 @Controller('candidates')
 export class CandidateController {

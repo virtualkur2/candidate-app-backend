@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, Inject } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
-import { SeniorityType } from './domain/seniority.type';
-import { Candidate } from './domain/candidate.entity';
-import { CANDIDATE_REPOSITORY, ICandidateRepository } from './domain/candidate.repository.interface';
-import { CandidateResponseDto } from './dto/candidate-response.dto';
+import { SeniorityType } from '../../domain/seniority.type';
+import { Candidate } from '../../domain/candidate.entity';
+import { CANDIDATE_REPOSITORY, ICandidateRepository } from '../../domain/candidate.repository.interface';
+import { CandidateResponseDto } from '../../dto/candidate-response.dto';
 
 interface CandidateData {
     seniority: SeniorityType;

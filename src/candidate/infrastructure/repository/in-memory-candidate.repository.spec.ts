@@ -1,5 +1,5 @@
 import { InMemoryCandidateRepository } from './in-memory-candidate.repository';
-import { Candidate } from '../domain/candidate.entity';
+import { Candidate } from '../../domain/candidate.entity';
 
 describe('InMemoryCandidateRepository', () => {
   let repo: InMemoryCandidateRepository;

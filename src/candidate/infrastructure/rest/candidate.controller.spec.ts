@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CandidateController } from './candidate.controller';
-import { CandidateService } from './candidate.service';
+import { CandidateController } from '../rest/candidate.controller';
+import { CandidateService } from '../services/candidate.service';
 import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { CreateCandidateDto } from './dto/create-candidate.dto';
-import { CandidateResponseDto } from './dto/candidate-response.dto';
-import { SeniorityType } from './domain/seniority.type';
+import { CreateCandidateDto } from '../../dto/create-candidate.dto';
+import { CandidateResponseDto } from '../../dto/candidate-response.dto';
+import { SeniorityType } from '../../domain/seniority.type';
 
 describe('CandidateController', () => {
   let controller: CandidateController;
