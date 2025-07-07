@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res, UploadedFile, UseInterceptors, BadRequestException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Post, Get, Res, UploadedFile, UseInterceptors, BadRequestException, HttpStatus } from '@nestjs/common';
 import { CandidateService } from './candidate.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
@@ -36,14 +36,15 @@ export class CandidateController {
 
         try {
             const excelData = await this.candidateService.processExcelFile(file.path);
-            const processedData: CandidateResponseDto = {
+            // Persist candidate
+            const saved = this.candidateService.saveCandidate({
                 name: body.name,
                 surname: body.surname,
                 seniority: excelData.seniority,
                 years: excelData.yearsOfExperience,
                 availability: excelData.availability,
-            }
-            return resp.status(HttpStatus.OK).json(processedData);
+            });
+            return resp.status(HttpStatus.OK).json(saved);
         } catch (error) {
 
             if (fs.existsSync(file.path)) {
@@ -63,5 +64,11 @@ export class CandidateController {
             
             throw new BadRequestException(`Failed to process candidate data: ${error.message}`);
         }
+    }
+
+    @Get()
+    async getAllCandidates(@Res() resp: Response) {
+        const all = this.candidateService.getAllCandidates();
+        return resp.status(HttpStatus.OK).json(all);
     }
 }

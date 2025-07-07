@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Inject } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
 import { SeniorityType } from './domain/seniority.type';
-
+import { Candidate } from './domain/candidate.entity';
+import { CANDIDATE_REPOSITORY, ICandidateRepository } from './domain/candidate.repository.interface';
 
 interface CandidateData {
     seniority: SeniorityType;
@@ -11,6 +12,11 @@ interface CandidateData {
 }
 @Injectable()
 export class CandidateService {
+    constructor(
+      @Inject(CANDIDATE_REPOSITORY)
+      private readonly candidateRepository: ICandidateRepository
+    ) {}
+
     async processExcelFile(filePath: string): Promise<CandidateData> {
         try {
             const workBook = XLSX.readFile(filePath);
@@ -74,6 +80,16 @@ export class CandidateService {
                 fs.unlinkSync(filePath);
             }
         }
+    }
+
+    saveCandidate(data: { name: string; surname: string; seniority: string; years: number; availability: boolean }): Candidate {
+      const id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+      const candidate = new Candidate(id, data.name, data.surname, data.seniority, data.years, data.availability);
+      return this.candidateRepository.save(candidate);
+    }
+
+    getAllCandidates(): Candidate[] {
+      return this.candidateRepository.findAll();
     }
 
     private findColumnIndex(targetHeader: string, headers: string[]): number {
