@@ -26,9 +26,11 @@ export class CandidateController {
         }
         
         if (!/\.(xlsx|xls)$/.exec(file.originalname)) {
-            fs.unlink(file.path, (err) => {
-              if (err) console.error('Error deleting non-excel file:', err);
-            });
+            try {
+                fs.unlinkSync(file.path);
+            } catch (error) {
+                console.error('Error deleting non-excel file:', error);
+            }
             throw new BadRequestException('Only Excel files (.xlsx, .xls) are allowed.');
         }
 
@@ -45,9 +47,12 @@ export class CandidateController {
         } catch (error) {
 
             if (fs.existsSync(file.path)) {
-                fs.unlink(file.path, (err) => {
-                  if (err) console.error('Error deleting temporary file on error:', err);
-                });
+                try {
+                    fs.unlinkSync(file.path);
+                } catch (error) {
+                    console.error('Error deleting temporary file on error:', error);
+                    throw error;
+                }
             }
 
             console.error('Error processing candidate:', error.message);
