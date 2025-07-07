@@ -26,7 +26,6 @@ export class CandidateController {
         }
         
         if (!/\.(xlsx|xls)$/.exec(file.originalname)) {
-            // Delete the uploaded file if it's not an Excel file
             fs.unlink(file.path, (err) => {
               if (err) console.error('Error deleting non-excel file:', err);
             });
