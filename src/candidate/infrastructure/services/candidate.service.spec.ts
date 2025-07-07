@@ -3,7 +3,7 @@ import { CandidateService } from './candidate.service';
 import { BadRequestException } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
-import { CANDIDATE_REPOSITORY } from './domain/candidate.repository.interface';
+import { CANDIDATE_REPOSITORY } from '../../domain/candidate.repository.interface';
 
 describe('CandidateService', () => {
   let service: CandidateService;
